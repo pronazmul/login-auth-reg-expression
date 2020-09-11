@@ -17,9 +17,26 @@ const LoginForm = () => {
         error: ''
     })
     const handleSubmit = (event) => {
-        if (user.email && user.password) {
-
+        //Create New User With Email & Password
+        if (signUp && user.email && user.password) {
             firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
+                .then(data => {
+                    let newUser = { ...user }
+                    newUser.success = true
+                    newUser.error = ''
+                    setUser(newUser)
+                })
+                .catch(error => {
+                    let newUser = { ...user }
+                    newUser.success = false
+                    newUser.error = error.message
+                    setUser(newUser)
+                });
+        }
+
+        //Sign in With Email & Password
+        if (!signUp && user.email && user.password) {
+            firebase.auth().signInWithEmailAndPassword(user.email, user.password)
                 .then(data => {
                     let newUser = { ...user }
                     newUser.success = true
@@ -70,7 +87,7 @@ const LoginForm = () => {
     return (
         <div className='container'>
             <h1 className='jumbotron text-center text-success display-4 py-4'>Simple Login With Regular Expression</h1>
-            {user.success && <h4 className='text-center text-success'>User Added Successfully</h4>}
+            {user.success && <h4 className='text-center text-success'>User {signUp? 'Created':'Logged in'} Successfully</h4>}
             {user.error && <h4 className='text-center text-danger'>{user.error}</h4>}
             <form>
                 <div className='form-group col-md-4 mx-auto'>
