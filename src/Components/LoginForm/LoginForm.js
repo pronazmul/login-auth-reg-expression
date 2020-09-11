@@ -6,29 +6,30 @@ import firebaseConfig from './firebaseConfig/firebaseConfig';
 firebase.initializeApp(firebaseConfig)
 
 const LoginForm = () => {
+
+    const [signUp, SetSignUp] = useState(false)
+
     const [user, setUser] = useState({
         userName: '',
         email: '',
         password: '',
-        success:false,
-        error:''
+        success: false,
+        error: ''
     })
     const handleSubmit = (event) => {
-
-        console.log(user.email, user.password)
         if (user.email && user.password) {
 
             firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
                 .then(data => {
                     let newUser = { ...user }
                     newUser.success = true
-                    newUser.error =''
+                    newUser.error = ''
                     setUser(newUser)
                 })
-                .catch(error =>{
+                .catch(error => {
                     let newUser = { ...user }
                     newUser.success = false
-                    newUser.error =error.message
+                    newUser.error = error.message
                     setUser(newUser)
                 });
         }
@@ -73,11 +74,13 @@ const LoginForm = () => {
             {user.error && <h4 className='text-center text-danger'>{user.error}</h4>}
             <form>
                 <div className='form-group col-md-4 mx-auto'>
-                    <input onBlur={handleBlur} name='userName' type='text' className='form-control ' placeholder='Enter Username'></input>
-                    <input onBlur={handleBlur} name='email' type='email' className='form-control mt-2' placeholder='Enter Email'></input>
-                    <input onBlur={handleBlur} name='password' type='password' className='form-control mt-2' placeholder='Enter Password'></input>
-                    <input onClick={handleSubmit} className=' btn btn-success rounded mt-3 btn-lg' type='submit' value='Sign Up'></input>
-                </div>
+                        <input onChange={()=> SetSignUp(!signUp)} className="form-check-input" type='checkbox' id='checkData'></input>
+                        <label for ='checkData' className='text-secondary'>Sign Up</label>
+                        {signUp && <input onBlur={handleBlur} name='userName' type='text' className='form-control ' placeholder='Enter Username'></input>}
+                        <input onBlur={handleBlur} name='email' type='email' className='form-control mt-2' placeholder='Enter Email'></input>
+                        <input onBlur={handleBlur} name='password' type='password' className='form-control mt-2' placeholder='Enter Password'></input>
+                        <input onClick={handleSubmit} className=' btn btn-success rounded mt-3 btn-lg' type='submit' value='Sign Up'></input>
+                    </div>
             </form>
         </div>
     );
